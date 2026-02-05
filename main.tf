@@ -1,3 +1,5 @@
+# trigger infracost pipeline
+
 terraform {
   required_version = ">= 1.4"
 
