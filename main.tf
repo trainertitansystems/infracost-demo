@@ -1,3 +1,5 @@
+# trigger infracost pipeline
+
 terraform {
   required_version = ">= 1.4"
 
@@ -100,7 +102,7 @@ resource "google_compute_instance" "siem_vm" {
   boot_disk {
     initialize_params {
       image = "ubuntu-os-cloud/ubuntu-2204-lts"
-      size  = 30
+      size  = 50
     }
   }
 
