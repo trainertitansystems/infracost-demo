@@ -16,6 +16,7 @@ jobs:
   infracost:
     name: infracost-cost-check
     runs-on: ubuntu-latest
+    environment: INFRACOST_API_KEY
 
     steps:
       - name: Checkout code
@@ -58,12 +59,13 @@ jobs:
 
 
   # --------------------------------------------------
-  # 2️⃣ Gemini AI job (SEPARATE check)
+  # 2️⃣ Gemini AI job (SEPARATE status check)
   # --------------------------------------------------
   gemini:
     name: gemini-ai-review
     runs-on: ubuntu-latest
     needs: infracost
+    environment: INFRACOST_API_KEY
 
     steps:
       - name: Download Infracost artifact
