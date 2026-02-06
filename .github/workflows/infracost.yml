@@ -1,7 +1,7 @@
 name: Terraform Cost & AI Review
 
 on:
-  pull_request:
+  pull_request_target:
     paths:
       - '**/*.tf'
 
@@ -16,11 +16,14 @@ jobs:
   infracost:
     name: infracost-cost-check
     runs-on: ubuntu-latest
-    environment: INFRACOST_API_KEY
 
     steps:
-      - name: Checkout code
+      # ⚠️ SAFE CHECKOUT: explicitly checkout PR code
+      - name: Checkout PR code safely
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -59,13 +62,12 @@ jobs:
 
 
   # --------------------------------------------------
-  # 2️⃣ Gemini AI job (SEPARATE status check)
+  # 2️⃣ Gemini AI job (SEPARATE check)
   # --------------------------------------------------
   gemini:
     name: gemini-ai-review
     runs-on: ubuntu-latest
     needs: infracost
-    environment: INFRACOST_API_KEY
 
     steps:
       - name: Download Infracost artifact
