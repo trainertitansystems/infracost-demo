@@ -19,7 +19,6 @@ jobs:
     environment: INFRACOST_API_KEY
 
     steps:
-      # Safe checkout of PR code
       - name: Checkout PR code safely
         uses: actions/checkout@v4
         with:
@@ -60,7 +59,6 @@ jobs:
         with:
           name: infracost-json
           path: infracost.json
-
 
   # --------------------------------------------------
   # 2️⃣ Gemini AI job (SEPARATE check)
