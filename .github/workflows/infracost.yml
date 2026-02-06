@@ -7,8 +7,9 @@ on:
 
 jobs:
   infracost:
-    name: infracost-cost-check   # 🔴 THIS is the enforced check name
+    name: infracost-cost-check
     runs-on: ubuntu-latest
+    environment: INFRACOST_API_KEY   # ✅ MUST match environment name exactly
 
     permissions:
       contents: read
@@ -26,9 +27,6 @@ jobs:
         with:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
-      # ----------------------------
-      # 1️⃣ Infracost calculation
-      # ----------------------------
       - name: Generate Infracost JSON
         run: |
           infracost breakdown \
@@ -50,9 +48,6 @@ jobs:
           gh pr comment ${{ github.event.pull_request.number }} \
             --body-file infracost.md
 
-      # ----------------------------
-      # 2️⃣ Gemini AI review (advisory)
-      # ----------------------------
       - name: Gemini AI cost review
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -77,7 +72,8 @@ jobs:
               }]
             }' > gemini_payload.json
 
-          curl -s https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=$GEMINI_API_KEY \
+          curl -s \
+            "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=$GEMINI_API_KEY" \
             -H "Content-Type: application/json" \
             -d @gemini_payload.json \
             | jq -r '.candidates[0].content.parts[0].text' > gemini.md
